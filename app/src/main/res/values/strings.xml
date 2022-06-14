@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MVVMCommunication</string>
+    <string name="some_text">Some text...</string>
+    <string name="back">back</string>
+    <string name="change_text">Change text</string>
+    <string name="on_second_fragment">on second fragment</string>
+</resources>
