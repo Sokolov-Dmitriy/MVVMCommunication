@@ -16,21 +16,22 @@ class MyViewModel(
     val navActionFlow = navigationController.navActionFlow(viewModelScope)
 
     fun onBackPressed() {
-		//вызываем popBackStack()
+        //вызываем popBackStack()
         navigationController.back()
     }
 
-	fun onNextPage(){
-		//вызываем navigate()
-		navigationController.navigateTo(NavDirections)
-	}
+    fun onNextPage(){
+        //вызываем navigate()
+        navigationController.navigateTo(NavDirections)
+    }
 }
 ```
 ```java
 class MyFragment : Fragment(R.layout.fragment) {
     private val binding by ...
     private val viewModel by ...
-	//в примере используется inject через koin, необходимо передать lifecycleScope, полученный ранее SharedFlow от NaviagtionController и NavController.
+    //в примере используется inject через koin, необходимо передать lifecycleScope, 
+    //полученный ранее SharedFlow от NaviagtionController и NavController.
     private val navigationHandler by inject<ViewHandler>(named(ViewHandlerEnum.NAVIGATION)) {
         parametersOf(
             lifecycleScope,
@@ -45,7 +46,7 @@ class MyFragment : Fragment(R.layout.fragment) {
         binding.backBtn.setOnClickListener {
             viewModel.onBackPressed()
         }
-		binding.nextBtn.setOnClickListener {
+        binding.nextBtn.setOnClickListener {
             viewModel.onNextPage()
         }
     }
@@ -76,17 +77,17 @@ class MyViewModel(
     private val getRandomHuman: GetRandomHuman
 ) : ViewModel() {
 
-	//в данном случае я создаю контроллер сразу в UseCase
+    //в данном случае я создаю контроллер сразу в UseCase
     private val randomHumanController = getRandomHuman.controller
-	//получаем StateFlow из контроллера
+    //получаем StateFlow из контроллера
     val randomHumanState = randomHumanController.stateFlow
 
     fun loadRandomHuman() {
         viewModelScope.launch {
-			//событие загрузки
+            //событие загрузки
             randomHumanController.loadingState()
             getRandomHuman()
-				//событие успешного окончания загрузки
+            //событие успешного окончания загрузки
                 .onSuccess { randomHumanController.successState(it) }
         }
     }
@@ -97,16 +98,13 @@ class MyFragment : Fragment(R.layout.first_fragment) {
     private val binding by ...
     private val viewModel by ...
 
-	//также, как и в навигации, передается lifecycleScope, 
-	//StateFlow, полученный из контроллера 
-	//и объект HandlerImplementation, в котором необходимо 
-	//реализовать 4 колбек функции: 
-	//      - setupStartConfiguration - вызывается в самом начале всегда, 
-	//это дефолтное значение для StateFlow, я обычно инициализирую в нем списки,
-	//адаптеры, вызываю загрузку и т.д.
-	//      - onSuccessState - вызывается, если вызвать successState у контроллера
-	//      - onErrorState - вызывается, если вызвать errorState у контроллера
-	//      - onLoadingState - вызывается, если вызвать loadingState у контроллера
+    //также, как и в навигации, передается lifecycleScope, StateFlow, полученный из контроллера 
+    //и объект HandlerImplementation, в котором необходимо реализовать 4 колбек функции: 
+    //    - setupStartConfiguration - вызывается в самом начале всегда, это дефолтное значение для StateFlow,
+    //я обычно инициализирую в нем списки, адаптеры, вызываю загрузку и т.д.
+    //    - onSuccessState - вызывается, если вызвать successState у контроллера
+    //    - onErrorState - вызывается, если вызвать errorState у контроллера
+    //    - onLoadingState - вызывается, если вызвать loadingState у контроллера
     private val randomHumanHandler by inject<ViewHandler>(named(ViewHandlerEnum.RANDOM_HUMAN)) {
         parametersOf(
             lifecycleScope,
@@ -127,11 +125,11 @@ class MyFragment : Fragment(R.layout.first_fragment) {
             }
         )
     }
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         randomHumanHandler.subscribe()
     }
-	private fun showProgressBar() {...}
+    private fun showProgressBar() {...}
 
     private fun showMainContent() {...}
 }
